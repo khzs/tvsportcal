@@ -14,7 +14,7 @@ def get_calendar(filename:str = "calendar.ics"):
             summary = str(component.get("SUMMARY"))
             dtstart = component.get("DTSTART").dt
             if isinstance(dtstart, datetime):
-                dtstart = dtstart.isoformat()
+                dtstart = dtstart.replace(tzinfo=None).isoformat()
             existing_event_keys.add((summary, dtstart))
 
     return calendar, existing_event_keys
@@ -71,7 +71,7 @@ if __name__ == '__main__':
                         print(f'{program["start_datetime"]} | {program["end_datetime"]} | {program["title"]} | {program["episode_title"]}')
 
                         summary = f"{title}, {episode_title}" if episode_title else title
-                        key = (summary, start_dt.isoformat())
+                        key = (summary, start_dt.replace(tzinfo=None).isoformat())
                         if key not in existing_event_keys:
                             event = Event()
                             event.add("SUMMARY", summary)
