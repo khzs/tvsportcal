@@ -68,11 +68,10 @@ if __name__ == '__main__':
                 # Match title to search term + run the corresponding rule
                 for term, condition in search_terms.items():
                     if term.lower() in title.lower() and condition(program):
-                        print(f'{program["start_datetime"]} | {program["end_datetime"]} | {program["title"]} | {program["episode_title"]}')
-
                         summary = f"{title}, {episode_title}" if episode_title else title
                         key = (summary, start_dt.replace(tzinfo=None).isoformat())
                         if key not in existing_event_keys:
+                            print(key)
                             event = Event()
                             event.add("SUMMARY", summary)
                             event.add("DTSTART", start_dt)
