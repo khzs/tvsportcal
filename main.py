@@ -1,13 +1,9 @@
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
-
 import requests
 
 
-def get_calendar(filename:str = "calendar.ics"):
-    with open(filename, "r", encoding="utf-8") as f:
-        calendar = Calendar.from_ical(f.read())
-
+def get_existing_event_keys(calendar):
     existing_event_keys = set()
     for component in calendar.walk():
         if component.name == "VEVENT":
@@ -16,8 +12,7 @@ def get_calendar(filename:str = "calendar.ics"):
             if isinstance(dtstart, datetime):
                 dtstart = dtstart.replace(tzinfo=None).isoformat()
             existing_event_keys.add((summary, dtstart))
-
-    return calendar, existing_event_keys
+    return existing_event_keys
 
 
 def build_url():
@@ -29,7 +24,10 @@ def build_url():
 
 if __name__ == '__main__':
     filename = "calendar.ics"
-    calendar, existing_event_keys = get_calendar(filename)
+    with open(filename, "r") as f:
+        calendar = Calendar.from_ical(f.read())
+
+    existing_event_keys = get_existing_event_keys(calendar)
 
     url = build_url()
     data = requests.get(url).json()
