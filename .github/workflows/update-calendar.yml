@@ -1,0 +1,40 @@
+name: Update Calendar
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # runs every day at 5:00 UTC
+  workflow_dispatch:      # allow manual run from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    permissions:
+      # This permission is required for the action to push changes back to the repository.
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install dependencies with Poetry
+        run: poetry install --no-root --no-interaction --no-ansi
+
+      - name: Run script
+        run: poetry run python main.py
+
+      - name: Commit and push calendar.ics
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git diff
+          git add calendar.ics
+          git commit -m "- update calendar.ics [auto]" || echo "No changes to commit"
+          git push
