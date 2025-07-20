@@ -34,9 +34,15 @@ def get_existing_event_keys(calendar):
 
 def build_url():
     url_base = "https://port.hu/tvapi"
+    channel_ids = {
+        "M4 Sport": 290,
+        "Sport 1": 90,
+        "Sport 2": 44,
+    }
+    channel_list = "&".join([f"channel_id[]=tvchannel-{cid}" for cid in channel_ids.values()])
     date_today = datetime.now().strftime("%Y-%m-%d")
     x_days_later = (datetime.now() + timedelta(days=4)).strftime("%Y-%m-%d")
-    return f"{url_base}?channel_id[]=tvchannel-290&channel_id[]=tvchannel-90&channel_id[]=tvchannel-44&i_datetime_from={date_today}&i_datetime_to={x_days_later}"
+    return f"{url_base}?{channel_list}&i_datetime_from={date_today}&i_datetime_to={x_days_later}"
 
 
 def main():
