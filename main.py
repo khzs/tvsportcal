@@ -1,6 +1,23 @@
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
+from pydantic_settings import BaseSettings
 import requests
+
+
+class Settings(BaseSettings):
+    filename: str = "calendar.ics"
+    start_time_limit: time = time(11, 0)
+    end_time_limit: time = time(22, 0)
+    search_terms: dict = {
+        "Heti helyzet": lambda p: True,
+        "Lakers": lambda p: True,
+        "NBA": lambda p: True,
+        # "WNBA": lambda p: True,
+        "Kézilabda: U19-es női Eb": lambda p: "Magyarország" in p.get("episode_title", ""),
+        "Vizes világbajnokság": lambda p: "Női vízilabda" in p.get("episode_title", "") and "Magyarország" in p.get("episode_title", ""),
+    }
+
+settings = Settings()
 
 
 def get_existing_event_keys(calendar):
@@ -23,26 +40,13 @@ def build_url():
 
 
 if __name__ == '__main__':
-    filename = "calendar.ics"
-    with open(filename, "r") as f:
+    with open(settings.filename, "r") as f:
         calendar = Calendar.from_ical(f.read())
-
-    existing_event_keys = get_existing_event_keys(calendar)
 
     url = build_url()
     data = requests.get(url).json()
 
-    search_terms = {
-        "Heti helyzet": lambda p: True,
-        "Lakers": lambda p: True,
-        "NBA": lambda p: True,
-        # "WNBA": lambda p: True,
-        "Kézilabda: U19-es női Eb": lambda p: "Magyarország" in p.get("episode_title", ""),
-        "Vizes világbajnokság": lambda p: "Női vízilabda" in p.get("episode_title", "") and "Magyarország" in p.get("episode_title", ""),
-    }
-
-    start_time_limit = time(11, 0)
-    end_time_limit = time(22, 0)
+    existing_event_keys = get_existing_event_keys(calendar)
 
     # Process all days and channels
     for day_data in data.values():
@@ -60,11 +64,11 @@ if __name__ == '__main__':
                     continue
 
                 # Apply time filter
-                if not (start_time_limit <= start_dt.time() <= end_time_limit):
+                if not (settings.start_time_limit <= start_dt.time() <= settings.end_time_limit):
                     continue
 
                 # Match title to search term + run the corresponding rule
-                for term, condition in search_terms.items():
+                for term, condition in settings.search_terms.items():
                     if term.lower() in title.lower() and condition(program):
                         summary = f"{title}, {episode_title}" if episode_title else title
                         key = (summary, start_dt.replace(tzinfo=None).isoformat())
@@ -78,5 +82,5 @@ if __name__ == '__main__':
                             existing_event_keys.add(key)
                         break
 
-    with open(filename, "wb") as f:
+    with open(settings.filename, "wb") as f:
         f.write(calendar.to_ical())
