@@ -39,7 +39,7 @@ def build_url():
     return f"{url_base}?channel_id[]=tvchannel-290&channel_id[]=tvchannel-90&channel_id[]=tvchannel-44&i_datetime_from={date_today}&i_datetime_to={x_days_later}"
 
 
-if __name__ == '__main__':
+def main():
     with open(settings.filename, "r") as f:
         calendar = Calendar.from_ical(f.read())
 
@@ -84,3 +84,7 @@ if __name__ == '__main__':
 
     with open(settings.filename, "wb") as f:
         f.write(calendar.to_ical())
+
+
+if __name__ == '__main__':
+    main()
