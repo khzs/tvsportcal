@@ -45,4 +45,16 @@ SUMMARY:Vizes világbajnokság\, Női vízilabda: Magyarország - Olaszors
 DTSTART;TZID="UTC+02:00":20250719T181500
 DTEND;TZID="UTC+02:00":20250719T193500
 END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Vizes világbajnokság\, Női vízilabda - Magyarország - Spanyol
+ ország elődöntő mérkőzés
+DTSTART;TZID="UTC+02:00":20250721T153500
+DTEND;TZID="UTC+02:00":20250721T164000
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Vizes világbajnokság\, Női vízilabda - Magyarország - Spanyol
+ ország elődöntő mérkőzés
+DTSTART;TZID="UTC+02:00":20250721T214500
+DTEND;TZID="UTC+02:00":20250721T230000
+END:VEVENT
 END:VCALENDAR
