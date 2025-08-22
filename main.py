@@ -11,12 +11,11 @@ class Settings(BaseSettings):
     start_time_limit: time = time(11, 0)
     end_time_limit: time = time(22, 0)
     search_terms: dict = {
+        "Csillagok között": lambda p: True,
         "Heti helyzet": lambda p: True,
         # "Lakers": lambda p: True,
         "NBA": lambda p: re.search(r'\bNBA\b', p.get("title", "")),
         "WNBA": lambda p: True,
-        "Kézilabda: U17-es női Európa-bajnokság": lambda p: ("Magyarország" in p.get("episode_title", "")) or ("Hollandia" in p.get("episode_title", "")),
-        "Ülőröplabda: Európa-bajnokság nők": lambda p: True,
     }
 
 settings = Settings()
