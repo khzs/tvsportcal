@@ -1,5 +1,3 @@
-import re
-
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
 from pydantic_settings import BaseSettings
@@ -13,8 +11,7 @@ class Settings(BaseSettings):
     search_terms: dict = {
         "Csillagok között": lambda p: True,
         "Heti helyzet": lambda p: True,
-        # "Lakers": lambda p: True,
-        "NBA": lambda p: re.search(r'\bNBA\b', p.get("title", "")),
+        "Kosárlabda: NBA": lambda p: True,
         "WNBA": lambda p: True,
     }
 
