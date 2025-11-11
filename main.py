@@ -6,8 +6,8 @@ import requests
 
 class Settings(BaseSettings):
     filename: str = "calendar.ics"
-    start_time_limit: time = time(11, 0)
-    end_time_limit: time = time(22, 0)
+    start_time_earliest: time = time(11, 0)
+    start_time_latest: time = time(22, 0)
     search_terms: dict = {
         "Csillagok között": lambda p: True,
         "Heti helyzet": lambda p: True,
@@ -68,7 +68,7 @@ def main():
                     continue
 
                 # Apply time filter
-                if not (settings.start_time_limit <= start_dt.time() <= settings.end_time_limit):
+                if not (settings.start_time_earliest <= start_dt.time() <= settings.start_time_latest):
                     continue
 
                 # Match title to search term + run the corresponding rule
