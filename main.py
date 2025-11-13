@@ -6,7 +6,7 @@ import requests
 
 class Settings(BaseSettings):
     filename: str = "calendar.ics"
-    start_time_earliest: time = time(11, 0)
+    start_time_earliest: time = time(9, 30)
     start_time_latest: time = time(22, 0)
     search_terms: dict = {
         "Csillagok között": lambda p: True,
