@@ -12,8 +12,6 @@ class Settings(BaseSettings):
     search_terms: dict = {
         "Csillagok között": lambda p: True,
         "Heti helyzet": lambda p: True,
-        "Kosárlabda: NBA": lambda p: True,
-        "WNBA": lambda p: True,
     }
 
 
