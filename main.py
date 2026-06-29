@@ -1,7 +1,8 @@
-from icalendar import Calendar, Event
-from datetime import datetime, timedelta, time
-from pydantic_settings import BaseSettings
+from datetime import datetime, time, timedelta
+
 import requests
+from icalendar import Calendar, Event
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -14,6 +15,7 @@ class Settings(BaseSettings):
         "Kosárlabda: NBA": lambda p: True,
         "WNBA": lambda p: True,
     }
+
 
 settings = Settings()
 
@@ -37,7 +39,9 @@ def build_url():
         "Sport 1": 90,
         "Sport 2": 44,
     }
-    channel_list = "&".join([f"channel_id[]=tvchannel-{cid}" for cid in channel_ids.values()])
+    channel_list = "&".join(
+        [f"channel_id[]=tvchannel-{cid}" for cid in channel_ids.values()]
+    )
     date_today = datetime.now().strftime("%Y-%m-%d")
     x_days_later = (datetime.now() + timedelta(days=4)).strftime("%Y-%m-%d")
     return f"{url_base}?{channel_list}&i_datetime_from={date_today}&i_datetime_to={x_days_later}"
@@ -68,13 +72,19 @@ def main():
                     continue
 
                 # Apply time filter
-                if not (settings.start_time_earliest <= start_dt.time() <= settings.start_time_latest):
+                if not (
+                    settings.start_time_earliest
+                    <= start_dt.time()
+                    <= settings.start_time_latest
+                ):
                     continue
 
                 # Match title to search term + run the corresponding rule
                 for term, condition in settings.search_terms.items():
                     if term.lower() in title.lower() and condition(program):
-                        summary = f"{title}, {episode_title}" if episode_title else title
+                        summary = (
+                            f"{title}, {episode_title}" if episode_title else title
+                        )
                         key = (summary, start_dt.replace(tzinfo=None).isoformat())
                         if key not in existing_event_keys:
                             print(key)
@@ -90,5 +100,5 @@ def main():
         f.write(calendar.to_ical())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
